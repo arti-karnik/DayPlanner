@@ -5,10 +5,9 @@ var date = moment();
 
 $(document).ready(function() {
   setDate(date);
-  loadEvents();
-        setupUI();
- // setTextareaId();
+  setupUI();
 
+  loadEvents();
 
 
     $( ".saveBtn" ).click(function() {
@@ -22,79 +21,42 @@ $(document).ready(function() {
         date = date.subtract(1, "days");
         setDate(date);
         setupUI();
+        loadEvents();
 
     });
     $( "#nextBtn" ).click(function() {
       date = date.add(1, "days");
        setDate(date);
       setupUI();
+      loadEvents();
   });
 });
 
 function setupUI() {
   $('.row').each(function(index, obj){
-    
-    /*
-    var hour = moment().format('hh A');
-      var currentTime = date.format("MM/DD/YYYY hh A") + " " +  obj.innerText;
-
-
-    var beginningTime = moment(currentTime, 'h:mm A');
-    var endTime = moment(hour, 'h:mm A');
-    //var beginningTime = moment(currentTime, "MM/DD/YYYY hh A");
-    //var endTime = moment(hour, 'MM/DD/YYYY hh A');
-    
-    
-    console.log(beginningTime, endTime);
-
-
-    if (beginningTime.isBefore(endTime)) {
-      $(this).find( "textarea").css( "background-color", "gray" );   
-    } else if (beginningTime.isSame(endTime)) {
-      console.log("SAME.....");
-
-      $(this).find( "textarea").css( "background-color", "red" );      
-    } else if (beginningTime.isAfter(endTime)) {
-      console.log("after");
-
-      $(this).find( "textarea").css( "background-color", "green" );  
-    } */
 
     var hour = moment().format('hh A');
-    var currentTime = moment(date.format("MM/DD/YYYY") + " " + obj.innerText, "MM/DD/YYYY hh A") ;
-    var endTime = moment(hour, 'h:mm A');
+    var currentSlot = moment(date.format("MM/DD/YYYY") + " " + obj.innerText, "MM/DD/YYYY hh A") ;
+    var currentTime = moment(hour, 'h:mm A');
 
-    console.log("current time : " + currentTime);
-
-    if (currentTime.isBefore(endTime)) {
-          console.log("BEofre");
-    }  else if (currentTime.isAfter(endTime)) {
-      console.log("after");
-      } else if (currentTime.isSame(endTime)) {
-          console.log("same");
-    }  
-     
-
-    //var beginningTime = moment(obj.innerText, 'h:mm A');
-
-    if (currentTime.isBefore(endTime)) {
+    if (currentSlot.isBefore(currentTime)) {
       $(this).find( "textarea").css( "background-color", "gray" );   
-    } else if (currentTime.isSame(endTime)) {
+    } else if (currentSlot.isSame(currentTime)) {
       $(this).find( "textarea").css( "background-color", "red" );      
-    } else if (currentTime.isAfter(endTime)) {
+    } else if (currentSlot.isAfter(currentTime)) {
       $(this).find( "textarea").css( "background-color", "green" );  
     } 
 
 
     var text =  $(this).find("textarea");
-    var textareaId = date + trimText(obj.innerText); 
+    var textareaId = date.format("MMDDYYYY") + trimText(obj.innerText); 
+    console.log(date.format("MMDDYYYY") + trimText(obj.innerText));
     text.attr('id', textareaId);
-    //setDate(date);
-
+    text.text("");
   });
 }
 function setDate(myDate) {
-      dateEl.text("Date: " +  myDate.format("MM/DD/YYYY"));
+    dateEl.text("Date: " +  myDate.format("MM/DD/YYYY"));
 }
 function trimText(str) {
   str = str.replace(":","");
@@ -103,11 +65,9 @@ function trimText(str) {
    return str;
 }
 function loadEvents() {
+  //emptyTextArea();
   var savedData = getEvent();
   
-  // var myDivElement = $( "#012320211000AM" );
-  // myDivElement.text("abcdfef");
-
   var savedData = JSON.parse(getEvent());
   
   if (savedData == null) {
@@ -119,6 +79,11 @@ function loadEvents() {
         myDivElement.text(savedData[i].description);
   
   }
+}
+function emptyTextArea() {
+  $('textarea').each(function(index, obj){
+    obj.text("");
+  });
 }
 function setTextareaId() {
     $('textarea').each(function(index, obj){ 
