@@ -1,69 +1,76 @@
 
-
+var Events;
 $(document).ready(function() {
-
-    const now = moment()
-    
-    $('textarea').each(function(index, obj){
-      console.log(this);
-
-      var time = obj.innerHTML;
+  
+  
+    $('.row').each(function(index, obj){
       var hour = moment().format('hh A');
-      var beginningTime = moment(obj.innerHTML, 'hh A');
-      var endTime = moment(hour, 'hh A');
 
-      $(this).css("background", "yellow");
-      if (beginningTime.isSame(endTime)) {
-        console.log("current " + time + " " + hour); 
+      var beginningTime = moment(obj.innerText, 'h:mm A');
+      var endTime = moment(hour, 'h:mm A');
 
-
-      } else if ( beginningTime.isBefore(endTime)) {
-        console.log("befire " + time + " " + hour);
-      } else {
-        console.log("after " + time + " " + hour);
-      }
-      //you can use this to access the current item
+      if (beginningTime.isBefore(endTime)) {
+        $(this).find( "textarea").css( "background-color", "gray" );   
+      } else if (beginningTime.isSame(endTime)) {
+        $(this).find( "textarea").css( "background-color", "red" );      
+      } else if (beginningTime.isAfter(endTime)) {
+        $(this).find( "textarea").css( "background-color", "green" );  
+      } 
     });
-
-    /*var objects = $(".hour");
-    for (var obj of objects) {
-      console.log(this);
-      var time = obj.innerHTML;
-      var hour = moment().format('hh A');
-      var beginningTime = moment(obj.innerHTML, 'hh A');
-      var endTime = moment(hour, 'hh A');
-
-      if (beginningTime.isSame(endTime)) {
-        console.log("current " + time + " " + hour); 
-        obj.addClass("past");
-
-      } else if ( beginningTime.isBefore(endTime)) {
-        console.log("befire " + time + " " + hour);
-      } else {
-        console.log("after " + time + " " + hour);
-      }
-       checkTime(obj.innerHTML);
-
-    }*/
+    loadEvents();
 
 
-    function checkTime(time) {
-        var hour = moment().format('hh A');
-       
-        var beginningTime = moment(time, 'hh A');
-        var endTime = moment(hour, 'hh A');
-       
-        if (beginningTime.isSame(endTime)) {
-          console.log("current " + time + " " + hour); 
+    $( ".saveBtn" ).click(function() {
 
-        } else if ( beginningTime.isBefore(endTime)) {
-          console.log("befire " + time + " " + hour);
-        } else {
-          console.log("after " + time + " " + hour);
-        }
-    //    console.log("current time: " + time + "current : " + hour + " " + beginningTime.isBefore(endTime)); // true
+      var description = $(this).parent().find("textarea").val();
+      var time = $(this).parent().find('p').text();
 
-        //console.log(moment().format("hh A").isBefore("07:00 PM")) ;
-        
-    }
-  });
+     saveEvent(description, time);
+
+    });
+});
+function loadEvents() {
+  var savedData = getEvent();
+  console.log(savedData);
+
+  for (var i=0; i<savedData.length; i++) {
+   // console.log(savedData[i].description);
+   // console.log(savedData[i].time);
+
+    console.log($(savedData[i].time));
+  }
+
+}
+/*--------------------------------------------------------------
+# Create object variable for saving score details
+--------------------------------------------------------------*/
+function createEventbject(description, time) {
+  var object = {
+      "description": description, 
+      "time": time,
+  }
+  return object;
+}
+function getEvent() {
+  return   JSON.parse(localStorage.getItem("event"));
+}
+/*--------------------------------------------------------------
+# Method to save Score 
+--------------------------------------------------------------*/
+function saveEvent(text, time) {
+  var object = createEventbject(text, time);
+  console.log(object);
+
+  var savedData = getEvent();
+  
+  if (savedData === null) { 
+      Events = [object];
+  } else {
+      Events = JSON.parse(savedData);
+      Events.push(object);
+  }   
+  //console.log(JSON.stringify(Events));
+
+  localStorage.setItem('event', JSON.stringify(Events));
+}
+
