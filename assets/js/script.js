@@ -1,6 +1,8 @@
 
 var Events;
 var dateEl = $( '#title-date');
+var tableEl = $( '#table-contents');
+
 var date = moment();
 var today =  moment();
 var nextweek = 0;
@@ -9,27 +11,54 @@ var newMoment;
 var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 var times = ["12:00 AM", "01:00 AM", "02:00 AM", "03:00 AM","04:00 AM","05:00 AM","06:00 AM","07:00 AM","08:00 AM","09:00 AM","10:00 AM","11:00 AM",
 "12:00 PM", "01:00 PM", "02:00 PM","03:00 PM","04:00 PM","05:00 PM","06:00 PM","07:00 PM","08:00 PM","09:00 PM","10:00 PM","11:00 PM",];
-var week = [];
+var week = ["","","","","","",""];
+var month = ["Jan", "Feb", "March", "April", "May", "June", "July", "Auguest", "September", "October", "November", "December"];
 
-var timeState = {
-  past: "gray",
-  present: "red",
-  future: "green"
+var eventView = {
+  week: "week",
+  day: "day",
 }
 
+function createWeekView() {
+      for (var i=0 ;i < times.length; i++) {
+        var rowEl = $("<tr></tr>");   // Create with jQuery
+
+       // var rowEl = $('tr').createElement();
+        var rowheaderEl = $('<th></th>');
+
+        rowheaderEl.text(times[i]);
+        rowEl.append(rowheaderEl);
+
+        for (var j=0; j<days.length; j++) {
+          var colEl = $('<td></td>');
+          colEl.text(days[j] + " " + times[i]);
+
+          var textArea = $('<textarea></textarea>').addClass("table-text");
+          colEl.append(textArea);
+          rowEl.append(colEl);
+        }
+
+        tableEl.append(rowEl);
+      }
+}
 $(document).ready(function() {
+
+  createWeekView();
   setUpIdMonth();
-  setupUI();
-    $( ".saveBtn" ).click(function() {
+  setUpIdMonth();
+
+ // setupUI();
+    $( ".button-save" ).click(function() {
+      alert("in ssved");
       var description = $(this).parent().find("textarea");
      saveEvent(description.val(), description.attr('id'));
     });
 
-    $( "#prevBtn" ).click(function() {
+    $( "#prevDayBtn" ).click(function() {
         date = date.subtract(1, "days");
         setupUI();
     });
-    $( "#nextBtn" ).click(function() {
+    $( "#nextDayBtn" ).click(function() {
       date = date.add(1, "days");
       setupUI();
   });
@@ -40,10 +69,20 @@ $(document).ready(function() {
        setUpIdMonth();
 });
 
-$( "#nextWeekBtn" ).click(function() {
+  $( "#nextWeekBtn" ).click(function() {
       alert("next week clicked");
       today = today.add(7, "days");
       setUpIdMonth();
+});
+
+  $( "#weekBtn" ).click(function() {
+    alert("week btn clicked");
+
+});
+
+$( "#dayBtn" ).click(function() {
+  alert("day btn clicked");
+
 });
 
 });
@@ -55,24 +94,20 @@ function getTextAreaId() {
 
 }
 
-function checkTime(currentTime, currentSlot) {
-  if (currentSlot.isBefore(currentTime)) {
-        return timeState.past
-  } else if (currentSlot.isSame(currentTime)) {
-
-    return timeState.present;
-  } else if (currentSlot.isAfter(currentTime)) {
-
-    return timeState.future;
-  } 
-}
-
 function getDay() {
   var day = moment().format("d");
 
   return day;
 
-  console.log(day);
+}
+function getColor(startTime, endTime) {
+    if (startTime.isBefore(endTime)) {
+      return "past"; 
+    } else if (startTime.isAfter(endTime)) {
+      return "future";  
+    } else {
+      return "present";
+    }
 }
 function setUpIdMonth() {
   week = [];
@@ -80,75 +115,88 @@ function setUpIdMonth() {
   var currentTime = date.format("MM/DD/YYYY dddd hh A");
   var diff;
   var calculateDate = "";
-
-  $('table  thead tr th').each(function(index, obj){
-        console.log($(this).text());
-  });
+  var currentSlot;
+  var currentTime
+  var hour = moment().format('MM/DD/YYYY dddd hh A');
+  currentTime = moment(hour, 'MM/DD/YYYY dddd hh A');
 
 
   $('table  tbody tr td').each(function(index, obj){
     $(this).text("");
 
-    var index_time = $(this).parent().parent().children().index(this.parentNode);
-    var index_day = $(this).parent().children().index(this);
+       var index_time = $(this).parent().parent().children().index(this.parentNode);
+       var index_day = $(this).parent().children().index(this);
 
-    var currentDay = getDay();
-    var slotDay = index_day - 1;
-    var text = "";
-
+        var currentDay = getDay();
+        var slotDay = index_day - 1;
+        var text = "";
+       
       if (currentDay == slotDay) {
-        var hour = moment().format('MM/DD/YYYY dddd hh A');
-        var currentSlot = moment(date.format("MM/DD/YYYY") + " " + days[index_day - 1] + " " + times[index_time], "MM/DD/YYYY dddd hh A") ;
-        var currentTime = moment(hour, 'MM/DD/YYYY dddd hh A');
-        var status = checkTime(currentTime,currentSlot);
+        currentSlot = moment(date.format("MM/DD/YYYY") + " " + days[index_day - 1] + " " + times[index_time], "MM/DD/YYYY dddd hh A") ;
         text= getText(today.format("MMDDYYYY"),  times[index_time]);
-        $(this).css("background-color", "red");
+      //  $(this).text(text);
         calculateDate = today.format("MM/DD/YYYY");
-      } else if (currentDay < slotDay) {
+        pushDateInArray(calculateDate, today.format("d"));
+
+      } 
+      else if (currentDay < slotDay) {
         diff = slotDay - currentDay;
         const nextDay = today.clone().add(diff, 'days');
         text = getText(nextDay.format("MMDDYYYY"),  times[index_time]);
-        //$(this).text(text);
-        $(this).css("background-color", "green");
         calculateDate = nextDay.format("MM/DD/YYYY");
+        pushDateInArray(calculateDate, nextDay.format("d"));
 
+       // $(this).text(text);
 
       } else {
-        diff = slotDay - currentDay;
+
+        diff = Math.abs(slotDay - currentDay);
+
         const prevDay = today.clone().subtract(diff, 'days');
         text = getText(prevDay.format("MMDDYYYY"), times[index_time]);
-        //$(this).text(text);
-        $(this).css("background-color", "gray");
         calculateDate = prevDay.format("MM/DD/YYYY");
+        pushDateInArray(calculateDate, prevDay.format("d"));
 
-        //week.indexOf(prevDay.format("MM/DD/YYYY")) === -1 ? week.push(prevDay) : console.log("This item already exists");
+      //  $(this).text(text);
+
       }
-      pushDateInArray(calculateDate);
-      var textareaId = trimText(text); 
 
+      var str = (calculateDate + " " + times[index_time]);
+      const dt = moment(str, 'MM/DD/YYYY hh A')
+
+      var textareaId = trimText(text); 
       $(this).attr("id", textareaId);
-      //$(this).text(textareaId);
-      loadEvents();
+      loadEvents(eventView.week);
+
+      if (dt.isBefore(currentTime)) {
+        $(this).removeClass();
+        $(this).addClass("past");
+      } else if (dt.isAfter(currentTime)) {
+        $(this).removeClass();
+
+        $(this).addClass("future");
+      } else {
+        $(this).removeClass();
+
+        $(this).addClass("present");
+      }
 });
 
     $('#table-head').find('th').each(function(index, obj){
         if (index != 0) {
-          $(this).css("background-color", "pink");  
           $(this).text(days[index - 1] + " (" + week[index - 1] + ")");
       } 
     });
 
-    $('#title-month').text( week[0] + " to " + week[week.length - 1]);
-    $('#title-month').css("background-color", "pink");  
-
-      console.log(week);
+    $('#title-month').text("Week: " + week[0] + " to " + week[week.length - 1]);
 }
-function pushDateInArray(weekDate) {
 
-    if (week.indexOf(weekDate) === -1) {
-        week.push(weekDate);
-    }
-   
+function pushDateInArray(weekDate, no) {
+
+  if (week[no] != weekDate) {
+
+    week[no] = weekDate ;
+  }
 }
 function getText(myDate, myTime) {
   var str = myDate;
@@ -163,25 +211,25 @@ function setupUI() {
     var currentSlot = moment(date.format("MM/DD/YYYY") + " " + obj.innerText, "MM/DD/YYYY hh A") ;
     var currentTime = moment(hour, 'h:mm A');
 
+    var textArea =  $(this).find("textarea");
+    textArea.val("");
+
     if (currentSlot.isBefore(currentTime)) {
-      $(this).find( "textarea").css( "background-color", "gray" );   
+        textArea.removeClass().addClass("past");  
     } else if (currentSlot.isSame(currentTime)) {
-      $(this).find( "textarea").css( "background-color", "red" );      
+        textArea.removeClass().addClass("present");  
     } else if (currentSlot.isAfter(currentTime)) {
-      $(this).find( "textarea").css( "background-color", "green" );  
-    } 
+        textArea.removeClass().addClass("future");   
+    }
 
-    var text =  $(this).find("textarea");
     var textareaId = date.format("MMDDYYYY") + trimText(obj.innerText); 
-    text.attr('id', textareaId);
-    text.text("");
+    textArea.attr('id', textareaId);
     setDate(date);
-    loadEvents();
-
+    loadEvents(eventView.day);
   });
 }
 function setDate(myDate) {
-    dateEl.text("Date: " +  myDate.format("MM/DD/YYYY"));
+    dateEl.text("Date: " +  myDate.format("dddd, MM/DD/YYYY"));
 }
 function trimText(str) {
   str = str.replace(":","");
@@ -191,21 +239,24 @@ function trimText(str) {
 
    return str;
 }
-function loadEvents() {
+function loadEvents(view) {
   var savedData = getEvent();
-  
   var savedData = JSON.parse(getEvent());
-  
   if (savedData == null) {
     return ;
   }
   for (var i=0; i<savedData.length; i++) {
-        
-        var myDivElement = $( "#" + savedData[i].time);
+      var myDivElement = $( "#" + savedData[i].time);
+      if  (view == eventView.week) {
         myDivElement.text(savedData[i].description);
-  
+      } else {
+        myDivElement.val(savedData[i].description);
+
+      }
+
   }
 }
+
 function emptyTextArea() {
   $('textarea').each(function(index, obj){
     obj.text("");
@@ -233,7 +284,6 @@ function getEvent() {
 --------------------------------------------------------------*/
 function saveEvent(text, time) {
   var object = createEventbject(text, time);
-  console.log(object);
 
   var savedData = getEvent();
   
@@ -246,4 +296,5 @@ function saveEvent(text, time) {
   localStorage.setItem('event', JSON.stringify(Events));
   alert("Saved");
 }
+
 
