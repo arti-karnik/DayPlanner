@@ -1,4 +1,4 @@
-# DayPlaneer:
+# Plan My Day:
 
 
 <strong> Project Summary: </strong> <br>
