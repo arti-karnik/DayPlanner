@@ -12,23 +12,30 @@ header {
 }
 header h2 {
   color: white;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
   padding-top: 30px;
   font-style: italic;
 }
 .container {
   margin-bottom: 10%;
+  margin-top: 10px;
   padding-bottom: 20px;
   border-width: 10px;
   box-shadow: rgba(0, 128, 128, 0.15) 2px 5px 5px 5px;
   width: 80%;
   background-color: #f8f9fa;
 }
+.wrapper {
+  width: 80%;
+  margin-left: 10%;
+  margin-bottom: 10%;
+}
 .main {
     width:80%;
-    margin-left: 10%;
     margin-top: 20px;
-    margin-bottom: 20px;
+    align-items: center;
+    margin-left: 10%;
+    justify-content: space-between;
 }
 .row {
     margin: 5px;
@@ -43,7 +50,7 @@ header h2 {
   font-size: 15px;
 }
 .header-title  {
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   color: whitesmoke;
   text-align: center;
   padding-top:  30px;
@@ -52,6 +59,7 @@ header h2 {
 .title {
     font-size: 25px;
     text-align: center;
+
 }
 h2 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -69,9 +77,11 @@ h2 {
   padding-left: 40px;
 }
 #title-date {
-  margin-top: 10px;
   text-align: center;
+  color: rgb(40, 28, 28);
+  font-size: 25px;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-style: italic;
 }
 .form-inline {
   margin: 0px;
@@ -102,7 +112,7 @@ textarea  {
 }
 
 .present {
-  background-color: lightskyblue;
+  background-color: red;
   color: black;
   opacity: 1.0;
 }
@@ -117,6 +127,7 @@ textarea  {
   margin-top: 5px;
   margin-left: 10px;
   margin-right: 10px;
+  margin-bottom: 5px;
   color: white;
   background-color: rgb(124, 56, 56);
   text-align: center;
@@ -127,20 +138,9 @@ textarea  {
   border-width: 2px;
   border-radius: 15px;
 }
-.button-segment {
-  color: white;
-  text-align: center;
-  height: 40px;
-  border-left: 1px solid black;
-  border:15px;
-  border-width: 2px;
-  border-radius: 15px;
-  display: block;
-  width: 60px;
-}
+
 .button i:hover {
   font-size: 20px;
-  transition: all .3s ease-in-out;
 }
 .button-options  {
   margin-left: 5px;
@@ -159,15 +159,17 @@ textarea  {
 select {
   margin-left: 5px;
   margin: 1px;
-  color: black;
-  background-color: #f3898a;;
+  color: white;
+  font-size: 18px;
+  background-color: rgb(124, 56, 56);
   text-align: center;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  margin-right: 10px;
+  height: 40px;
   border-left: 1px solid black;
   border:15px;
   border-width: 2px;
   border-radius: 15px;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  margin-right: 10px;
 }
 /*--------------------------------------------------------------
 # Footer
@@ -183,14 +185,15 @@ select {
   bottom: 0;
   width: 100%;
   background-color: #252729;
+  justify-content: space-between;
  }
  table h6 {
-   background-color: #de5449;
+   background-color: wheat;
    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
    color: black;
+   margin: 0px;
+   padding: 0px
  }
- .event
-
  #tableWeek h6 {
   max-height: 50px;
   overflow: hidden;
@@ -199,6 +202,8 @@ select {
   border: 1px solid #000000;
   overflow: hidden;
   table-layout: fixed;
+  margin:0px;
+  padding: 0px;
 }
 #calendar h6 {
   overflow: hidden;
@@ -208,11 +213,13 @@ select {
   overflow: hidden;
   table-layout: fixed;
   max-height: 50px;
-
- }
+}
  .calendar-time-text {
    background-color: lightskyblue;
    text-align: left;
    font-size: 15px;
  }
-
+.calendar-title {
+  display: flex;
+  justify-content: space-evenly;
+ }

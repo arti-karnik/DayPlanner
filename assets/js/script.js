@@ -108,8 +108,8 @@ $(document).ready(function() {
   });
   
   $("#dayView").on("click", 'textarea', function(e) {
-    var slot = $(this).parent().find('p').text();
-    loadModaldetails(date, slot, $(this).text());
+      var slot = $(this).parent().find('p').text();
+      loadModaldetails(date, slot, $(this).text());
   });
   
   $("#selectDay").change(function(){
@@ -158,10 +158,7 @@ function showView(_view) {
     monthView.hide();
     singleView.show();
     setupUISingleDayEvent();
-
-
   } else if (_view == view.week) {
-
     weekView.show();
     monthView.hide();
     singleView.hide();
@@ -189,16 +186,6 @@ function save(date) {
     item.time = $('#descmodal').find('#timeSlot').val();
     item.desciption = $("#description-text").val();
     saveEvent(item);
-}
-
-function createUniqueIdentifier(_date, _time) {
-  var str = _date;
-  str += _time;
-  str = str.replaceAll(":","");
-  str = str.replaceAll(" ","");
-  str = str.replaceAll("Date","");
-  str = str.replaceAll("/","");
-  return str;
 }
 function addtimeSlots() {
   for (var i=0; i<times.length; i++) {
@@ -244,7 +231,7 @@ function createSingleDayEventElements() {
 function setupUISingleDayEvent() {
   $('#singledayView .row').each(function(index, obj){
     var hour = moment().format('hh A');
-    var currentSlot = moment(date.format("MM/DD/YYYY") + " " + obj.innerText, "MM/DD/YYYY hh A") ;
+    var currentSlot = moment(date.format("MM/DD/YYYY") + " " + obj.innerText, "MM/DD/YYYY hh A");
     var currentTime = moment(hour, 'h:mm A');
     
     var textArea =  $(this).find("textarea")
@@ -297,7 +284,6 @@ function filterItem(array, _item) {
     console.log(array[i].date, array[i].time, _item.date, _item.time);
 
     if (array[i].date == _item.date && (array[i].time == _item.time || _item.time == "")) {
-      console.log("saris");
       return array[i];
     } 
   }
@@ -356,6 +342,7 @@ function SetupUIWeek() {
   
   $("#tableWeek tbody tr td").each(function (index, obj) {
       $(this).find('h6').text("");
+      $(this).find('h5').text("");
 
     var index_time = $(this).parent().parent().children().index(this.parentNode);
     var index_day = $(this).parent().children().index(this);
