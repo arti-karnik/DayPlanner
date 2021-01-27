@@ -7,7 +7,9 @@ var tableEl = $( '#week-contents');
 var tableMonthEl = $('#month-contents');
 var timeSelectEl = $('timeSlot');
 var monthAndYear = $("#monthAndYear");
-var date = moment();
+var week_date = moment();
+var day_date = moment();
+
 var today =  moment();
 var currentMonth = today.format("M") - 1;
 var currentYear = today.format("YYYY");
@@ -39,10 +41,16 @@ $(document).ready(function() {
   
   ///=====   Save button events  ===== ////
   $( ".button-save" ).click(function() {
-    item.date = date.format("MM/DD/YYYY");
-    item.time = $(this).parent().find("p").text();
-    item.desciption = $(this).parent().find("textarea").val();
-    saveEvent(item);
+    var textArea =  $(this).parent().find("textarea").val();
+
+    if (validateText(textArea)) {
+      item.date = day_date.format("MM/DD/YYYY");
+      item.time = $(this).parent().find("p").text();
+      item.desciption = textArea;
+      saveEvent(item);
+    } else {
+      alert("Please enter text");
+    }
   })
   
   ///=====  Prev button events  ===== ////
@@ -161,6 +169,7 @@ function showView(_view) {
     singleView.hide();
     SetupUIWeek();
   } else {
+    //resetMonth();
     showMonth(currentMonth, currentYear);
     weekView.hide();
     monthView.show();
@@ -168,17 +177,12 @@ function showView(_view) {
   }
 }
 // Next month clicked
-function next() {
-  currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
-  currentMonth = (currentMonth + 1) % 12;
-  showMonth(currentMonth, currentYear);
+function resetMonth() {
+    currentMonth = moment().format("M") ;
+    currentYear = moment().format("YYYY");
+    console.log(currentMonth);
 }
-// Previous month clicked
-function previous() {
-  currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
-  currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
-  showMonth(currentMonth, currentYear);
-}
+
 // Save button clicked
 function save(date) {
     item.date = selectedDate;
@@ -231,7 +235,7 @@ function createSingleDayEventElements() {
 function setupUISingleDayEvent() {
   $('#singledayView .row').each(function(index, obj){
     var hour = moment().format('hh A');
-    var currentSlot = moment(date.format("MM/DD/YYYY") + " " + obj.innerText, "MM/DD/YYYY hh A");
+    var currentSlot = moment(day_date.format("MM/DD/YYYY") + " " + obj.innerText, "MM/DD/YYYY hh A");
     var currentTime = moment(hour, 'h:mm A');
     
     var textArea =  $(this).find("textarea")
@@ -239,14 +243,12 @@ function setupUISingleDayEvent() {
                           .removeClass()
                           .addClass(getColor(currentSlot, currentTime))
 
-    item.date = date.format("MM/DD/YYYY");
+    item.date = day_date.format("MM/DD/YYYY");
     item.time = obj.innerText;
     item.desciption = "";
 
     let saved = loadEvents(item);
     if (saved != null) {
-      console.log(saved);
-
       textArea.val(saved.description);
     }
    
@@ -280,9 +282,6 @@ function getSavedItem(_date, _time) {
 function filterItem(array, _item) {
 
   for (var i=0; i<array.length; i++) {
-
-    console.log(array[i].date, array[i].time, _item.date, _item.time);
-
     if (array[i].date == _item.date && (array[i].time == _item.time || _item.time == "")) {
       return array[i];
     } 
@@ -380,8 +379,6 @@ function SetupUIWeek() {
       $(this).find('h6').text(saved.description);
       $(this).find('h5').text(saved.time);
     }
-      
-    
 
     $(this).removeClass().addClass(getColor(dt, currentTime));
     $(this).attr('data-number', calculateDate + " " + times[index_time]);
@@ -413,7 +410,7 @@ function getDisplayDate(_date) {
 
 function setTitle() {
   if (currentView == view.day) {
-    dateEl.text("Date: " +  date.format("dddd, MM/DD/YYYY"));
+    dateEl.text("Date: " +  day_date.format("dddd, MM/DD/YYYY"));
 
   } else if (currentView == view.week) {
     dateEl.text("Week: " +  week[0].format("MM/DD/YYYY") + " to " + week[week.length - 1].format("MM/DD/YYYY"));
@@ -423,7 +420,9 @@ function setTitle() {
 }
 
 //================================================================================================ 
-
+function  validateText(text) {
+  return text == "" ? false : true;
+}
 //========================  Month Event ====================================================//
 
 function getDay(month, year) {
@@ -476,14 +475,17 @@ function showMonth(month, year) {
         var timeText = $('<h5></h5>');
         timeText.text("");
         timeText.addClass("calendar-time-text");
-
-
         var str = moment(date + months[month] + year);
-        const myMomentObject = moment(str, 'YYYY-MM-DD');
+        const myMomentObject = moment(str, 'DDMMYYYY');
+        myMomentObject.format("MM/DD/YYYY");
 
-        if (myMomentObject.format("MM/DD/YYYY") == today.format("MM/DD/YYYY")) {
+        const currentMoment = moment().format("MM/DD/YYYY");
+
+        console.log(myMomentObject.format("MM/DD/YYYY"), today.format("MM/DD/YYYY"));
+
+        if (myMomentObject.isSame(currentMoment)) {
               cell.addClass("present");
-        } else if (myMomentObject.isBefore(today)) {
+        } else if (myMomentObject.isBefore(currentMoment)) {
               cell.addClass("past");
         } else {
               cell.addClass("future");
@@ -513,11 +515,11 @@ function showMonth(month, year) {
 }
 
 function nextWeek() {
-    date = today.add(7, "days");
+  week_date = today.add(7, "days");
     SetupUIWeek();
 }
 function prevWeek(){
-   date = today.subtract(7, "days");
+  week_date = today.subtract(7, "days");
   SetupUIWeek();
 }
 function nextMonth() {
@@ -531,11 +533,11 @@ function prevMonth() {
   showMonth(currentMonth, currentYear);
 }
 function nextDay(){
-  date = date.add(1, "days");
+  day_date = day_date.add(1, "days");
   setupUISingleDayEvent(); 
 }
 function prevDay() {
-  date = date.subtract(1, "days");
+  day_date = day_date.subtract(1, "days");
   setupUISingleDayEvent();
 }
 /*--------------------------------------------------------------
@@ -567,7 +569,6 @@ function saveEvent(_item) {
     
     for (var i=0; i<Events.length; i++) {
       if (Events[i].date == _item.date && Events[i].time == _item.time) {
-        console.log("found match: "+ Events[i].description);
         Events.splice(i, 1);
       }
     }

@@ -4,15 +4,15 @@ body {
   line-height: 1;
 }
 section {
-  margin-bottom: 11%;
 }
 header {
   background-color: rgb(124, 56, 56);
   height: 100px;
+
 }
 header h2 {
-  color: white;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+  color: black;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   padding-top: 30px;
   font-style: italic;
 }
@@ -98,6 +98,8 @@ textarea  {
   border-top: 1px solid gray;
   margin-bottom: 0px;
   height: 48px;
+  font-size: 18px;
+
 }
 #description-text {
   width: 100%;
@@ -112,8 +114,8 @@ textarea  {
 }
 
 .present {
-  background-color: red;
-  color: black;
+  background-color: rgb(215, 70, 70);
+  color: rgb(24, 17, 17);
   opacity: 1.0;
 }
 
@@ -124,12 +126,11 @@ textarea  {
 }
 
 .button {
-  margin-top: 5px;
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-bottom: 5px;
+  margin: 5px 10px 5px 10px;
+
   color: white;
   background-color: rgb(124, 56, 56);
+
   text-align: center;
   height: 40px;
   width: 80px;
@@ -137,16 +138,21 @@ textarea  {
   border:15px;
   border-width: 2px;
   border-radius: 15px;
-}
+  background-color: rgb(124, 56, 56);
 
+}
+#table-head {
+    
+    font-size: 15px;
+    font-weight: 500;
+}
 .button i:hover {
   font-size: 20px;
 }
-.button-options  {
+.button-segment , .hover {
+  margin: 0px;
   margin-left: 5px;
-  margin: 1px;
-  color: black;
-  background-color: #f3898a;;
+  color: whitesmoke;
   text-align: center;
   height: 40px;
   width: 100px;
@@ -154,8 +160,10 @@ textarea  {
   border:15px;
   border-width: 2px;
   border-radius: 15px;
+  background-color: rgb(124, 56, 56);
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
+
 select {
   margin-left: 5px;
   margin: 1px;
@@ -208,11 +216,16 @@ select {
 #calendar h6 {
   overflow: hidden;
  }
- #calendar , th, td  {
+ #calendar {
+    height: 100px;
+    align-self: center;
+ }
+ #calendar th, td  {
   border: 1px solid #000000;
   overflow: hidden;
   table-layout: fixed;
   max-height: 50px;
+  max-width: 50px;
 }
  .calendar-time-text {
    background-color: lightskyblue;
