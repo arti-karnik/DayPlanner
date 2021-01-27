@@ -21,39 +21,38 @@ var view = {
   week: "week",
   month: "month"
 }
+var item = {
+    date: "",
+    time: "",
+    description: ""
+}
+
 var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 var times = ["00:00 AM", "01:00 AM", "02:00 AM", "03:00 AM","04:00 AM","05:00 AM","06:00 AM","07:00 AM","08:00 AM","09:00 AM","10:00 AM","11:00 AM",
 "12:00 PM", "01:00 PM", "02:00 PM","03:00 PM","04:00 PM","05:00 PM","06:00 PM","07:00 PM","08:00 PM","09:00 PM","10:00 PM","11:00 PM",];
 var week = ["","","","","","",""];
 var months = ["January", "February", "March", "April", "May", "June", "July", "Auguest", "September", "October", "November", "December"];
-
-
 //========================  Single Day Event ====================================================//
 
 $(document).ready(function() { 
-  
-  currentView = view.day;
-  
-  showCalendar(currentMonth,currentYear);
-  
-  addtimeSlots();
-  
-  createWeekEvent_Elements();
-  setUpIdMonth();
-  
   createSingleDayEventElements();
   setupUISingleDayEvent();
   
-  
-  singleView.show();
-  weekView.hide();
-  monthView.hide();
-  
-  
+  createWeekEvent_Elements();
+  SetupUIWeek();
+  addtimeSlots();
+
+  currentView = view.day;
+
+  showView(view.day);
+
   ///=====   Button click events  ===== ////
   $( ".button-save" ).click(function() {
-    var description = $(this).parent().find("textarea");
-    saveEvent(description.val(), description.attr('id'), date.format("MMDDYYYY"));
+    item.date = date.format("MM/DD/YYYY");
+    item.time = $(this).parent().find("p").text();
+    item.desciption = $(this).parent().find("textarea").val();
+
+    saveEvent(item);
   })
   
   $( "#prevDayBtn" ).click(function() {
@@ -80,23 +79,28 @@ $(document).ready(function() {
     ($(this).val() == 1) ?  $('.divallDay').hide() : $('.divallDay').show();
   });
   
-  
   $('#calendar').on('click', 'tbody td', function (e) {
     var desc = $(this).find('h6').text();
-    var dt = $(this).find('p').text();
-    var str = (currentYear + "-" + Math.abs(currentMonth - 1)  + "-" + dt);
-    
-      const myMomentObject = moment(str, 'YYYY-MM-DD')
-      loadModaldetails(myMomentObject.format("MM/DD/YYYY"), "00:AM", desc); 
+    var str = $(this).attr('data-number');
+    const myMomentObject = moment(str, 'MM/DD/YYYY hh:mm A');
+
+    item.date = myMomentObject.format("MM/DD/YYYY");
+    item.time = "00:00 AM";
+    item.description =  $(this).find('h6').text();
+    selectedDate = myMomentObject.format("MM/DD/YYYY");
+    loadModaldetails(item);
   });
   
   $('#weekView').on('click', 'tbody td', function (e) {
-    var desc = $(this).find('h6').text();
     var str = $(this).attr('data-number');
-    
     const myMomentObject = moment(str, 'MM/DD/YYYY hh:mm A');
-    
-    loadModaldetails(myMomentObject, myMomentObject.format("hh:mm A"), desc);
+
+    item.date = myMomentObject.format("MM/DD/YYYY");
+    item.time = myMomentObject.format("hh:mm A");
+    item.description =  $(this).find('h6').text();
+    selectedDate = myMomentObject.format("MM/DD/YYYY");
+
+    loadModaldetails(item);
   });
   
   $("#dayView").on("click", 'textarea', function(e) {
@@ -107,23 +111,18 @@ $(document).ready(function() {
   $("#selectDay").change(function(){
     if ($(this).val() == 1) {
       currentView = view.day;
-      showView(currentView);
-
+      showView(view.day);
       setupUISingleDayEvent();
-      loadEvents();
       
     } else if ($(this).val() == 3) {
       currentView = view.month;
-      showView(currentView);
-
+      showView(view.month);
       showCalendar(currentMonth, currentYear);
-      showEventsCalendar();
+
     } else if ($(this).val() == 2) {
       currentView = view.week;
-      showView(currentView);
-
-      setUpIdMonth();
-      loadEvents();
+      showView(view.week);
+      SetupUIWeek();
     }
 
   });
@@ -132,21 +131,18 @@ $(document).ready(function() {
 //===========================================================================//
 function showView(_view) {
   if (_view == view.day) {
-    console.log("oen m");
 
     weekView.hide();
     monthView.hide();
     singleView.show();
 
   } else if (_view == view.week) {
-    console.log("on m");
 
     weekView.show();
     monthView.hide();
     singleView.hide();
 
   } else {
-    console.log("on mq");
 
     weekView.hide();
     monthView.show();
@@ -174,17 +170,21 @@ function jump() {
 
 function save(date) {
   
-  var date = $('#descmodal').find('#modal-date-text').text();
+    item.date = selectedDate;
+    item.time = $('#descmodal').find('#timeSlot').val();
+    item.desciption = $("#description-text").val();
+
+ /* var date = $('#descmodal').find('#modal-date-text').text();
   var time =  $('#descmodal').find('#timeSlot').val();
   var desciption = $("#description-text").val();
-  console.log($('#descmodal').find('#modal-date-text').text());
   
   var identifier = createUniqueIdentifier(date,time);
   var date = createUniqueIdentifier(date,"");
-  console.log(identifier);
-  
-  saveEvent(desciption, identifier, date);
-  loadEvents();
+  */
+    saveEvent(item);
+
+
+  //saveEvent(desciption, identifier, date);
 }
 
 function createUniqueIdentifier(_date, _time) {
@@ -210,7 +210,7 @@ function loadSingleDayEvent() {
 }
 
 function setupUISingleDayEvent() {
-  $('.row').each(function(index, obj){
+  $('#singledayView .row').each(function(index, obj){
     
     var hour = moment().format('hh A');
     var currentSlot = moment(date.format("MM/DD/YYYY") + " " + obj.innerText, "MM/DD/YYYY hh A") ;
@@ -218,16 +218,19 @@ function setupUISingleDayEvent() {
     
     var textareaId = createUniqueIdentifier(date.format("MMDDYYYY"), obj.innerText);
     var textArea =  $(this).find("textarea");
+
     textArea.val("")
     .removeClass()
     .addClass(getColor(currentSlot, currentTime))
     .attr('id', textareaId)
     
     dateEl.text("Date: " +  date.format("dddd, MM/DD/YYYY"));
+    item.date = date.format("MM/DD/YYYY");
+    item.time = obj.innerText;
+    item.desciption = "";
+      var saved = loadEvents(item);
+    textArea.val(saved);
   });
-  
-  loadEvents();
-  
 }
 function getColor(_slot, _actual) {
   
@@ -244,8 +247,9 @@ function createSingleDayEventElements() {
   
   for (var i=0; i<times.length; i++) {
     var divEl = $("<div></div>");
-    divEl.addClass('row');
     divEl.addClass('form-inline');
+
+    divEl.addClass('row');
     
     var hourEl = $('<p></p>');
     hourEl.text(times[i]);
@@ -271,17 +275,43 @@ function createSingleDayEventElements() {
     }
   }
 }
-function loadEvents() {
+function getSavedItem(_date, _time) {
   var savedData = getEvent();
   var savedData = JSON.parse(getEvent());
   if (savedData == null) {
     return ;
+  } else {
+    for (var i=0; i<savedData.length; i++) {
+      if (savedData[i].date == _date && savedData[i].time == _time) {
+        return savedData[i].desciption;
+      }
+    }
   }
-  for (var i=0; i<savedData.length; i++) {
-    var myDivElement = $( "#" + savedData[i].time);
-    myDivElement.text(savedData[i].description);
-    myDivElement.val(savedData[i].description);
+}
+function filterItem(array, _item) {
+  for (var i=0; i<array.length; i++) {
+    if (array[i].date == _item.date && (array[i].time == _item.time || _item.time == "")) {
+          return array[i].description;
+    } 
   }
+  return "";
+}
+function loadEvents(_item) {
+  var savedData = JSON.parse(getEvent());
+  if (savedData == null) {
+    return ;
+  }
+   return filterItem(savedData, _item);
+  
+  
+  return "";
+  var items = savedData.filter(function(obj) {
+    return (obj.date === _item.date && obj.time === _item.time);
+});
+    console.log("items : " +  items.length > 0 ? items[0].description : "");
+      return items.length > 0 ? items.description : "";
+    
+
 }
 
 function showEventsCalendar() {
@@ -301,10 +331,12 @@ function showEventsCalendar() {
 
 //========================  Day Event ====================================================//
 
-function loadModaldetails(_date, _time, _description){
-  $('#descmodal').find('#modal-date-text').text("Date: "+  _date.format("MM/DD/YYYY")); 
-  $('#descmodal').find('#timeSlot').val(_time); 
-  $('#descmodal').find('#description-text').val(_description); 
+function loadModaldetails(_item){
+  console.log("lade : " + _item.date, _item.time, _item.desciption);
+
+  $('#descmodal').find('#modal-date-text').text("Date: "+ _item.date); 
+  $('#descmodal').find('#timeSlot').val(_item.time); 
+  $('#descmodal').find('#description-text').val(_item.description); 
 }
 
 //================================================================================================ 
@@ -323,7 +355,11 @@ function createWeekEvent_Elements() {
     
     for (var j=0; j<days.length; j++) {
       var colEl = $('<td></td>');
-      colEl.text(days[j] + " " + times[i]);
+
+      var descEl = $('<h6></h6>');
+      descEl.addClass("calendar-event");
+      descEl.text("dd");
+      colEl.append(descEl);
       rowEl.append(colEl);
     }
     
@@ -347,10 +383,88 @@ function pushDateInArray(weekDate, no) {
     week[no] = weekDate ;
   }
 }
-function setUpIdMonth() {
+function calculateWeekDates(actual, current) {
+      if (actual == current) {
+
+      } else if (actual < current) {
+
+      } else {
+
+      }
+}
+function getDisplayDate(_date) {
+  return _date.format("MM/DD/YYYY");
+}
+function SetupUIWeek() {
+  week = [];
+  view == view.week;
+  var diff;
+  var calculateDate = "";
+  var hour = moment().format('MM/DD/YYYY dddd hh A');
+  var currentTime = moment(hour, 'MM/DD/YYYY dddd hh A');
   
-  //var table = $("#tableWeek tbody");
+  $("#tableWeek tbody tr td").each(function (index, obj) {
+      $(this).find('h6').text("");
+
+    var index_time = $(this).parent().parent().children().index(this.parentNode);
+    var index_day = $(this).parent().children().index(this);
+    var currentDay = today.format("d");
+    var slotDay = index_day - 1;
+    
+    if (currentDay == slotDay) {
+      calculateDate = today;
+
+    } else if (currentDay < slotDay) {
+      diff = slotDay - currentDay;
+      const nextDay = today.clone().add(diff, 'days');
+      calculateDate = nextDay;
+    } else {
+      diff = Math.abs(slotDay - currentDay);
+      const prevDay = today.clone().subtract(diff, 'days');
+      calculateDate = prevDay;
+    }
+    let i = calculateDate.format("d");
+    
+    if (week[i] != calculateDate) {
+          week[i] = calculateDate ;
+    }
   
+   calculateDate = getDisplayDate(calculateDate);
+
+    var str = (calculateDate + " " + times[index_time]);
+    const dt = moment(str, 'MM/DD/YYYY hh A');
+  
+    item.date = dt.format("MM/DD/YYYY");
+    item.time = times[index_time];
+    item.description = "";
+    var saved = loadEvents(item);
+    $(this).find('h6').text(saved);
+
+    $(this).removeClass().addClass(getColor(dt, currentTime));
+    $(this).attr('data-number', calculateDate + " " + times[index_time]);
+  });
+  
+  $('#table-head').find('th').each(function(index, obj){
+    if (index != 0) {
+      $(this).text(days[index - 1] + " (" + week[index - 1].format("MM/DD/YYYY") + ")");
+    } 
+  });
+        setTitle();
+}
+function setTitle() {
+  if (currentView == view.day) {
+    dateEl.text("Date: " +  date.format("dddd, MM/DD/YYYY"));
+
+  } else if (currentView == view.week) {
+    dateEl.text("Week: " +  week[0].format("MM/DD/YYYY") + " to " + week[week.length - 1].format("MM/DD/YYYY"));
+  }  else {
+    dateEl.text(months[currentMonth]  + " " + currentYear);
+
+  }
+}
+
+
+function SetupUIWeek1() {
   week = [];
   
   var currentTime = date.format("MM/DD/YYYY dddd hh A");
@@ -363,8 +477,8 @@ function setUpIdMonth() {
   
   
   $("#tableWeek tbody tr td").each(function (index, obj) {
-    $(this).text("");
-    
+    $(this).find('h6').text("");
+
     var index_time = $(this).parent().parent().children().index(this.parentNode);
     var index_day = $(this).parent().children().index(this);
     
@@ -387,31 +501,23 @@ function setUpIdMonth() {
     } else {
       
       diff = Math.abs(slotDay - currentDay);
-      
       const prevDay = today.clone().subtract(diff, 'days');
       text = getText(prevDay.format("MMDDYYYY"), times[index_time]);
       calculateDate = prevDay.format("MM/DD/YYYY");
       pushDateInArray(calculateDate, prevDay.format("d"));
-      
-      
     }
     var str = (calculateDate + " " + times[index_time]);
-    const dt = moment(str, 'MM/DD/YYYY hh A')
-    
-    var textareaId = trimText(text); 
-    $(this).attr("id", textareaId);
-    loadEvents();
-    
-    if (dt.isBefore(currentTime)) {
-      $(this).removeClass().addClass("past");
-    } else if (dt.isAfter(currentTime)) {
-      $(this).removeClass();
-      
-      $(this).addClass("future");
-    } else {
-      $(this).removeClass();
-      $(this).addClass("present");
-    }
+    const dt = moment(str, 'MM/DD/YYYY hh A');
+  
+    item.date = dt.format("MM/DD/YYYY");
+    item.time = times[index_time];
+    item.description = "";
+
+    var saved = loadEvents(item);
+    $(this).find('h6').text(saved);
+
+    $(this).removeClass().addClass(getColor(dt, currentTime));
+
     $(this).attr('data-number', calculateDate + " " + times[index_time]);
     
   });
@@ -421,11 +527,10 @@ function setUpIdMonth() {
       $(this).text(days[index - 1] + " (" + week[index - 1] + ")");
     } 
   });
+  console.log(week);
   
-  dateEl.text("Week: " + week[0] + " to " + week[week.length - 1]);
+  dateEl.text("Week: " + week[0].format("MM/DD/YYYY") + " to " + week[week.length - 1]);
   $(this).addClass("past");
-  
-  
   $('#title-month').text("Week: " + week[0] + " to " + week[week.length - 1]);
 }
 
@@ -500,10 +605,9 @@ function showCalendar(month, year) {
         
         descText = $("<h6></h6>");
         descText.addClass("calendar-event");
-        
+      
         var str = moment(date + months[month] + year);
         const myMomentObject = moment(str, 'YYYY-MM-DD')
-        var textareaId = createUniqueIdentifier(myMomentObject.format("MM/DD/YYYY"), "");
         
         if (date == moment().format("D") && month  == (moment().format("M") - 1) && year == moment().format("YYYY")) {
           cell.addClass("present");
@@ -512,33 +616,36 @@ function showCalendar(month, year) {
         } else {
           cell.addClass("future");
         }
-        descText.attr('id', textareaId);
         // color today's date
         
         cell.append(cellText);
         cell.append(descText);
-        
+        cell.attr('data-number', myMomentObject.format("MM/DD/YYYY") + " " + "00:00 AM");
+
+        item.date = myMomentObject.format("MM/DD/YYYY") ;
+        item.time = "";
+
+        descText.text(loadEvents(item));
         row.append(cell);
         date++;
         
       }
     }
-    
+
     tbl.append(row); // appending each row into calendar body.
-    dateEl.text(months[month] + " " + year);
   }
   
-  showEventsCalendar();
+ // showEventsCalendar();
 }
 function nextWeek() {
       
   date = today.add(7, "days");
-  setUpIdMonth();
+  SetupUIWeek();
 }
 function prevWeek(){
   
   date = today.subtract(7, "days");
-  setUpIdMonth();
+  SetupUIWeek();
 }
 function nextMonth() {
   currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
@@ -553,7 +660,6 @@ function prevMonth() {
 function nextDay(){
   date = date.add(1, "days");
   setupUISingleDayEvent(); 
-  
 }
 function prevDay() {
   date = date.subtract(1, "days");
@@ -562,32 +668,42 @@ function prevDay() {
 /*--------------------------------------------------------------
 # Create object variable for saving score details
 --------------------------------------------------------------*/
-function createEventbject(description, time, _date) {
+function createEventbject(_item) {
   var object = {
-    "description": description, 
-    "time": time,
-    "date": _date,
-    
+    "date": _item.date,
+    "time": _item.time,
+    "description": _item.desciption
   }
   return object;
 }
 function getEvent() {
-  return  localStorage.getItem("event");
+  return  localStorage.getItem("Event");
 }
 /*--------------------------------------------------------------
 # Method to save Score 
 --------------------------------------------------------------*/
-function saveEvent(text, time, _date) {
-  var object = createEventbject(text, time, _date);
+function removeItemIfAlreadyExists() {
+}
+function saveEvent(_item) {
+  var object = createEventbject(_item);
   var savedData = getEvent();
-  
+ 
   if (savedData === null) { 
     Events = [object];
   } else {
+
     Events = JSON.parse(savedData);
+    
+    for (var i=0; i<Events.length; i++) {
+      console.log(Events[i].date, Events[i].time, _item.time, _item.date);
+      if (Events[i].date == _item.date && Events[i].time == _item.time) {
+        console.log("found match: "+ Events[i].description);
+        Events.splice(i, 1);
+      }
+    }
     Events.push(object);
   }   
-  localStorage.setItem('event', JSON.stringify(Events));
+  localStorage.setItem('Event', JSON.stringify(Events));
   alert("Saved");
 }
 
