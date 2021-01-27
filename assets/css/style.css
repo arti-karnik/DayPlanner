@@ -107,9 +107,10 @@ table h6 {
 /*================   Common CSS ================*/
 #title-date {
   text-align: center;
-  color: rgb(40, 28, 28);
-  font-size: 25px;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  color: black;
+  font-size: 21px;
+  padding-top: 5px;
+  font-family: 'Lucida Grande';
   font-style: italic;
 }
 .form-inline {
@@ -148,7 +149,7 @@ textarea  {
   opacity: 1.0;
 }
 .future {
-  background-color: #53b676;
+  background-color: rgb(78, 143, 78);
   color: rgb(20, 18, 18);
   opacity: 1.0;
 }

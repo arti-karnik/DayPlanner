@@ -208,10 +208,10 @@ function createWeekEvent_Elements() {
       var descEl = $('<h6></h6>');
       descEl.addClass("calendar-event");
       
-      var timeEl = $('<h5></h5>');
-      timeEl.addClass("calendar-event-time");
+     // var timeEl = $('<h5></h5>');
+    //  timeEl.addClass("calendar-event-time");
       
-      colEl.append(timeEl);
+     // colEl.append(timeEl);
       colEl.append(descEl);
       rowEl.append(colEl);
     }
@@ -270,7 +270,7 @@ function SetupUIWeek() {
     var saved = loadEvents(item);
     if (saved != null) {
       $(this).find('h6').text(saved.description);
-      $(this).find('h5').text(saved.time);
+     // $(this).find('h5').text(saved.time);
     }
     
     $(this).removeClass().addClass(getColor(dt, currentTime));
@@ -468,7 +468,7 @@ function saveEvent(_item) {
     Events.push(object);
   }   
   localStorage.setItem('Event', JSON.stringify(Events));
-  alert("Saved");
+  alert("Event Saved");
 }
 
 /*--------------------------------------------------------------
