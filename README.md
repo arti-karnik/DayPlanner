@@ -1,6 +1,5 @@
-# DayPlaneerDescription:
+# DayPlaneer:
 
-# Javascript-Quizzy
 
 <strong> Project Summary: </strong> <br>
 A simple day planner application that will allow the user to add events in one hour time slots.
