@@ -1,21 +1,23 @@
+
+/*================   Body CSS ================*/
 body {
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
   line-height: 1;
 }
-section {
-}
+/*================   Header CSS ================*/
 header {
   background-color: rgb(124, 56, 56);
   height: 100px;
-
 }
-header h2 {
-  color: black;
+.header-title  {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  padding-top: 30px;
+  color: whitesmoke;
+  text-align: center;
+  padding-top:  30px;
   font-style: italic;
 }
+/*================   Container CSS ================*/
 .container {
   margin-bottom: 10%;
   margin-top: 10px;
@@ -25,22 +27,33 @@ header h2 {
   width: 80%;
   background-color: #f8f9fa;
 }
+/*================   Wrapper CSS ================*/
 .wrapper {
   width: 80%;
   margin-left: 10%;
   margin-bottom: 10%;
 }
+/*================   Main CSS ================*/
 .main {
-    width:80%;
-    margin-top: 20px;
-    align-items: center;
-    margin-left: 10%;
-    justify-content: space-between;
+  width:80%;
+  margin-top: 20px;
+  align-items: center;
+  margin-left: 10%;
+  justify-content: space-between;
 }
-.row {
-    margin: 5px;
+/*================   Table CSS ================*/
+table h6 {
+  background-color: wheat;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  color: black;
+  margin: 0px;
+  padding: 0px
 }
-
+#table-head {
+  font-size: 15px;
+  font-weight: 500;
+}
+/*================   Day-view specific CSS ================*/
 .hour {
   color: black;
   text-align: center;
@@ -49,33 +62,49 @@ header h2 {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   font-size: 15px;
 }
-.header-title  {
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  color: whitesmoke;
-  text-align: center;
-  padding-top:  30px;
-  font-style: italic;
-}
-.title {
-    font-size: 25px;
-    text-align: center;
-
-}
-h2 {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-style: italic;
-    font-size: 22px;
-    color: rgb(26, 15, 15);
-    width: 82%;
-}
-.description{
-  white-space: pre-wrap;
-}
 .row {
   white-space: pre-wrap;
   width: 100%;
   padding-left: 40px;
+  margin: 5px;
 }
+/*================   Week - view specific CSS ================*/
+#tableWeek h6 {
+  max-height: 50px;
+  overflow: hidden;
+}
+#tableWeek , th, td  {
+  border: 1px solid #000000;
+  overflow: hidden;
+  table-layout: fixed;
+  margin:0px;
+  padding: 0px;
+}
+/*================   Month-view specific CSS ================*/
+#calendar h6 {
+  overflow: hidden;
+}
+#calendar {
+  height: 100px;
+  align-self: center;
+}
+#calendar th, td  {
+  border: 1px solid #000000;
+  overflow: hidden;
+  table-layout: fixed;
+  max-height: 50px;
+  max-width: 50px;
+}
+.calendar-time-text {
+  background-color: lightskyblue;
+  text-align: left;
+  font-size: 15px;
+}
+.calendar-title {
+  display: flex;
+  justify-content: space-evenly;
+}
+/*================   Common CSS ================*/
 #title-date {
   text-align: center;
   color: rgb(40, 28, 28);
@@ -99,38 +128,33 @@ textarea  {
   margin-bottom: 0px;
   height: 48px;
   font-size: 18px;
-
+  white-space: pre-wrap;
 }
+
+
 #description-text {
   width: 100%;
   margin:0px;
   padding: 0px;
 }
- 
 .past {
   color: black;
   opacity: 0.5;
   background: rgba(0, 0, 0, 0.25);
 }
-
 .present {
   background-color: rgb(215, 70, 70);
   color: rgb(24, 17, 17);
   opacity: 1.0;
 }
-
 .future {
   background-color: #53b676;
   color: rgb(20, 18, 18);
   opacity: 1.0;
 }
-
 .button {
   margin: 5px 10px 5px 10px;
-
   color: white;
-  background-color: rgb(124, 56, 56);
-
   text-align: center;
   height: 40px;
   width: 80px;
@@ -139,17 +163,9 @@ textarea  {
   border-width: 2px;
   border-radius: 15px;
   background-color: rgb(124, 56, 56);
-
+  
 }
-#table-head {
-    
-    font-size: 15px;
-    font-weight: 500;
-}
-.button i:hover {
-  font-size: 20px;
-}
-.button-segment , .hover {
+select , .button-segment , .hover {
   margin: 0px;
   margin-left: 5px;
   color: whitesmoke;
@@ -163,21 +179,10 @@ textarea  {
   background-color: rgb(124, 56, 56);
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
-
 select {
   margin-left: 5px;
   margin: 1px;
-  color: white;
-  font-size: 18px;
-  background-color: rgb(124, 56, 56);
-  text-align: center;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  margin-right: 10px;
-  height: 40px;
-  border-left: 1px solid black;
-  border:15px;
-  border-width: 2px;
-  border-radius: 15px;
+  width: 120px;
 }
 /*--------------------------------------------------------------
 # Footer
@@ -194,45 +199,4 @@ select {
   width: 100%;
   background-color: #252729;
   justify-content: space-between;
- }
- table h6 {
-   background-color: wheat;
-   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-   color: black;
-   margin: 0px;
-   padding: 0px
- }
- #tableWeek h6 {
-  max-height: 50px;
-  overflow: hidden;
- }
- #tableWeek , th, td  {
-  border: 1px solid #000000;
-  overflow: hidden;
-  table-layout: fixed;
-  margin:0px;
-  padding: 0px;
 }
-#calendar h6 {
-  overflow: hidden;
- }
- #calendar {
-    height: 100px;
-    align-self: center;
- }
- #calendar th, td  {
-  border: 1px solid #000000;
-  overflow: hidden;
-  table-layout: fixed;
-  max-height: 50px;
-  max-width: 50px;
-}
- .calendar-time-text {
-   background-color: lightskyblue;
-   text-align: left;
-   font-size: 15px;
- }
-.calendar-title {
-  display: flex;
-  justify-content: space-evenly;
- }
