@@ -74,7 +74,7 @@ table h6 {
   overflow: hidden;
 }
 #tableWeek , th, td  {
-  border: 1px solid #000000;
+  border: 1px solid rgb(67, 61, 61);
   overflow: hidden;
   table-layout: fixed;
   margin:0px;
@@ -89,7 +89,7 @@ table h6 {
   align-self: center;
 }
 #calendar th, td  {
-  border: 1px solid #000000;
+  border: 1px solid rgb(67, 61, 61);
   overflow: hidden;
   table-layout: fixed;
   max-height: 50px;
