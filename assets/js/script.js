@@ -4,7 +4,7 @@ var weekView = $( '#weekView');
 var singleView = $( '#singledayView');
 var monthView = $( '#monthView');
 var tableEl = $( '#week-contents');
-var tableMonth = $('calendar');
+var tableMonthEl = $('#month-contents');
 var timeSelectEl = $('timeSlot');
 var monthAndYear = $("#monthAndYear");
 var date = moment();
@@ -12,10 +12,8 @@ var today =  moment();
 var currentMonth = today.format("M") - 1;
 var currentYear = today.format("YYYY");
 var currentView;
-var selectYear = $("#year");
-var selectMonth = $("#month");
 var selectedDate;
-var selectedTime;
+
 var view = {
   day: "day",
   week: "week",
@@ -26,25 +24,16 @@ var item = {
     time: "",
     description: ""
 }
-
 var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 var times = ["00:00 AM", "01:00 AM", "02:00 AM", "03:00 AM","04:00 AM","05:00 AM","06:00 AM","07:00 AM","08:00 AM","09:00 AM","10:00 AM","11:00 AM",
 "12:00 PM", "01:00 PM", "02:00 PM","03:00 PM","04:00 PM","05:00 PM","06:00 PM","07:00 PM","08:00 PM","09:00 PM","10:00 PM","11:00 PM",];
 var week = ["","","","","","",""];
 var months = ["January", "February", "March", "April", "May", "June", "July", "Auguest", "September", "October", "November", "December"];
-//========================  Single Day Event ====================================================//
 
 $(document).ready(function() { 
-  createSingleDayEventElements();
-  setupUISingleDayEvent();
-  
-  createWeekEvent_Elements();
-  SetupUIWeek();
-  addtimeSlots();
 
-  currentView = view.day;
-
-  showView(view.day);
+  createUIElements();
+  start();
 
   ///=====   Button click events  ===== ////
   $( ".button-save" ).click(function() {
@@ -80,18 +69,33 @@ $(document).ready(function() {
   });
   
   $('#calendar').on('click', 'tbody td', function (e) {
-    var desc = $(this).find('h6').text();
-    var str = $(this).attr('data-number');
-    const myMomentObject = moment(str, 'MM/DD/YYYY hh:mm A');
+    
+    if ($(this).hasClass( "past" )) {
+      alert("This event is already passed, wont be able to add/edit.");
+      $('#modalsavebtn').attr("disabled", true);
+    } else {
+      $('#modalsavebtn').attr("disabled", false);
+    }
 
-    item.date = myMomentObject.format("MM/DD/YYYY");
-    item.time = "00:00 AM";
-    item.description =  $(this).find('h6').text();
-    selectedDate = myMomentObject.format("MM/DD/YYYY");
-    loadModaldetails(item);
+      var str = $(this).attr('data-number');
+      const myMomentObject = moment(str, 'MM/DD/YYYY hh:mm A');
+
+      item.date = myMomentObject.format("MM/DD/YYYY");
+      item.time = $(this).find('h5').text() ;
+      item.description =  $(this).find('h6').text();
+      selectedDate = myMomentObject.format("MM/DD/YYYY");
+      loadModaldetails(item);
+
   });
   
   $('#weekView').on('click', 'tbody td', function (e) {
+    if ($(this).hasClass( "past" )) {
+      alert("This event is already passed, wont be able to add/edit.");
+      $('#modalsavebtn').attr("disabled", true);
+    } else {
+      $('#modalsavebtn').attr("disabled", false);
+    }
+
     var str = $(this).attr('data-number');
     const myMomentObject = moment(str, 'MM/DD/YYYY hh:mm A');
 
@@ -112,38 +116,58 @@ $(document).ready(function() {
     if ($(this).val() == 1) {
       currentView = view.day;
       showView(view.day);
-      setupUISingleDayEvent();
-      
     } else if ($(this).val() == 3) {
       currentView = view.month;
       showView(view.month);
-      showCalendar(currentMonth, currentYear);
-
     } else if ($(this).val() == 2) {
       currentView = view.week;
       showView(view.week);
-      SetupUIWeek();
     }
-
   });
   ///========================================
 });
 //===========================================================================//
+function savetimesSlotinCalendar(array, obj) {
+  for (var i=0 ; i<array.length; i++) {
+        var descText = $("<h6></h6>");
+        descText.addClass("calendar-event");
+        descText.text(array[i].description);
+
+        var timeText = $('<h5></h5>');
+        timeText.text("");
+        timeText.addClass("calendar-time-text");
+        timeText.text(array[i].time);
+        obj.append(timeText);
+        obj.append(descText);
+  }
+}
+function createUIElements() {
+  createWeekEvent_Elements();
+  addtimeSlots();
+  createSingleDayEventElements();
+  setupUISingleDayEvent();
+}
+function start(){
+  currentView = view.day;
+  showView(view.day);
+  weekView.hide();
+}
 function showView(_view) {
   if (_view == view.day) {
-
     weekView.hide();
     monthView.hide();
     singleView.show();
+    setupUISingleDayEvent();
+
 
   } else if (_view == view.week) {
 
     weekView.show();
     monthView.hide();
     singleView.hide();
-
+    SetupUIWeek();
   } else {
-
+    showMonth(currentMonth, currentYear);
     weekView.hide();
     monthView.show();
     singleView.hide();
@@ -152,39 +176,19 @@ function showView(_view) {
 function next() {
   currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
   currentMonth = (currentMonth + 1) % 12;
-  showCalendar(currentMonth, currentYear);
+  showMonth(currentMonth, currentYear);
 }
 
 function previous() {
   currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
   currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
-  showCalendar(currentMonth, currentYear);
+  showMonth(currentMonth, currentYear);
 }
-
-function jump() {
-  currentYear = parseInt(selectYear.value);
-  currentMonth = parseInt(selectMonth.value);
-  showCalendar(currentMonth, currentYear);
-}
-
-
 function save(date) {
-  
     item.date = selectedDate;
     item.time = $('#descmodal').find('#timeSlot').val();
     item.desciption = $("#description-text").val();
-
- /* var date = $('#descmodal').find('#modal-date-text').text();
-  var time =  $('#descmodal').find('#timeSlot').val();
-  var desciption = $("#description-text").val();
-  
-  var identifier = createUniqueIdentifier(date,time);
-  var date = createUniqueIdentifier(date,"");
-  */
     saveEvent(item);
-
-
-  //saveEvent(desciption, identifier, date);
 }
 
 function createUniqueIdentifier(_date, _time) {
@@ -203,45 +207,7 @@ function addtimeSlots() {
     $('#descmodal').find('#timeSlot').append(optionEl); 
   }
 }
-//========================  Single Day Event ====================================================//
-function loadSingleDayEvent() {
-  createSingleDayEventElements();
-  setupUISingleDayEvent();
-}
-
-function setupUISingleDayEvent() {
-  $('#singledayView .row').each(function(index, obj){
-    
-    var hour = moment().format('hh A');
-    var currentSlot = moment(date.format("MM/DD/YYYY") + " " + obj.innerText, "MM/DD/YYYY hh A") ;
-    var currentTime = moment(hour, 'h:mm A');
-    
-    var textareaId = createUniqueIdentifier(date.format("MMDDYYYY"), obj.innerText);
-    var textArea =  $(this).find("textarea");
-
-    textArea.val("")
-    .removeClass()
-    .addClass(getColor(currentSlot, currentTime))
-    .attr('id', textareaId)
-    
-    dateEl.text("Date: " +  date.format("dddd, MM/DD/YYYY"));
-    item.date = date.format("MM/DD/YYYY");
-    item.time = obj.innerText;
-    item.desciption = "";
-      var saved = loadEvents(item);
-    textArea.val(saved);
-  });
-}
-function getColor(_slot, _actual) {
-  
-  if (_slot.isBefore(_actual)) {
-    return "past";
-  } else if (_slot.isSame(_actual)) {
-    return "present";  
-  } else if (_slot.isAfter(_actual)) {
-    return "future";   
-  }
-}
+//========================   Day Event ====================================================//
 function createSingleDayEventElements() {
   singleView.html('');
   
@@ -275,6 +241,42 @@ function createSingleDayEventElements() {
     }
   }
 }
+function setupUISingleDayEvent() {
+  $('#singledayView .row').each(function(index, obj){
+    var hour = moment().format('hh A');
+    var currentSlot = moment(date.format("MM/DD/YYYY") + " " + obj.innerText, "MM/DD/YYYY hh A") ;
+    var currentTime = moment(hour, 'h:mm A');
+    
+    var textArea =  $(this).find("textarea")
+                          .val("")
+                          .removeClass()
+                          .addClass(getColor(currentSlot, currentTime))
+
+    item.date = date.format("MM/DD/YYYY");
+    item.time = obj.innerText;
+    item.desciption = "";
+
+    let saved = loadEvents(item);
+    if (saved != null) {
+      console.log(saved);
+
+      textArea.val(saved.description);
+    }
+   
+    setTitle();
+  });
+}
+function getColor(_slot, _actual) {
+  
+  if (_slot.isBefore(_actual)) {
+    return "past";
+  } else if (_slot.isSame(_actual)) {
+    return "present";  
+  } else if (_slot.isAfter(_actual)) {
+    return "future";   
+  }
+}
+
 function getSavedItem(_date, _time) {
   var savedData = getEvent();
   var savedData = JSON.parse(getEvent());
@@ -289,12 +291,17 @@ function getSavedItem(_date, _time) {
   }
 }
 function filterItem(array, _item) {
+
   for (var i=0; i<array.length; i++) {
+
+    console.log(array[i].date, array[i].time, _item.date, _item.time);
+
     if (array[i].date == _item.date && (array[i].time == _item.time || _item.time == "")) {
-          return array[i].description;
+      console.log("saris");
+      return array[i];
     } 
   }
-  return "";
+  return null;
 }
 function loadEvents(_item) {
   var savedData = JSON.parse(getEvent());
@@ -302,52 +309,17 @@ function loadEvents(_item) {
     return ;
   }
    return filterItem(savedData, _item);
-  
-  
-  return "";
-  var items = savedData.filter(function(obj) {
-    return (obj.date === _item.date && obj.time === _item.time);
-});
-    console.log("items : " +  items.length > 0 ? items[0].description : "");
-      return items.length > 0 ? items.description : "";
-    
-
 }
-
-function showEventsCalendar() {
-  var savedData = getEvent();
-  var savedData = JSON.parse(getEvent());
-  if (savedData == null) {
-    return ;
-  }
-  for (var i=0; i<savedData.length; i++) {
-    var myDivElement = $( "#" + savedData[i].date);
-    myDivElement.text(savedData[i].description);
-    // myDivElement.val(savedData[i].description);
-  }
-}
-
 //================================================================================================ 
 
-//========================  Day Event ====================================================//
-
-function loadModaldetails(_item){
-  console.log("lade : " + _item.date, _item.time, _item.desciption);
-
-  $('#descmodal').find('#modal-date-text').text("Date: "+ _item.date); 
-  $('#descmodal').find('#timeSlot').val(_item.time); 
-  $('#descmodal').find('#description-text').val(_item.description); 
-}
-
-//================================================================================================ 
-
-//========================  Weeks  Event ====================================================//
+//========================   Week-View Event ====================================================//
 function createWeekEvent_Elements() {
   
   for (var i=0 ;i < times.length; i++) {
     var rowEl = $("<tr></tr>");  
     rowEl.attr("data-toggle", "modal");
     rowEl.attr("data-target", "#descmodal");
+    rowEl.addClass("table-row");
     var rowheaderEl = $('<th></th>');
     
     rowheaderEl.text(times[i]);
@@ -355,10 +327,14 @@ function createWeekEvent_Elements() {
     
     for (var j=0; j<days.length; j++) {
       var colEl = $('<td></td>');
-
+     
       var descEl = $('<h6></h6>');
       descEl.addClass("calendar-event");
-      descEl.text("dd");
+
+      var timeEl = $('<h5></h5>');
+      timeEl.addClass("calendar-event-time");
+
+      colEl.append(timeEl);
       colEl.append(descEl);
       rowEl.append(colEl);
     }
@@ -369,31 +345,6 @@ function createWeekEvent_Elements() {
     }
     tableEl.append(rowEl);
   }
-}
-function getText(myDate, myTime) {
-  var str = myDate;
-  //str += myDay;
-  str += myTime;
-  return str;
-}
-function pushDateInArray(weekDate, no) {
-  
-  if (week[no] != weekDate) {
-    
-    week[no] = weekDate ;
-  }
-}
-function calculateWeekDates(actual, current) {
-      if (actual == current) {
-
-      } else if (actual < current) {
-
-      } else {
-
-      }
-}
-function getDisplayDate(_date) {
-  return _date.format("MM/DD/YYYY");
 }
 function SetupUIWeek() {
   week = [];
@@ -438,7 +389,12 @@ function SetupUIWeek() {
     item.time = times[index_time];
     item.description = "";
     var saved = loadEvents(item);
-    $(this).find('h6').text(saved);
+    if (saved != null) {
+      $(this).find('h6').text(saved.description);
+      $(this).find('h5').text(saved.time);
+    }
+      
+    
 
     $(this).removeClass().addClass(getColor(dt, currentTime));
     $(this).attr('data-number', calculateDate + " " + times[index_time]);
@@ -451,6 +407,23 @@ function SetupUIWeek() {
   });
         setTitle();
 }
+
+function loadModaldetails(_item){
+  console.log("lade : " + _item.date, _item.time, _item.desciption);
+
+  $('#descmodal').find('#modal-date-text').text("Date: "+ _item.date); 
+  $('#descmodal').find('#timeSlot').val(_item.time); 
+  $('#descmodal').find('#description-text').val(_item.description); 
+}
+
+//================================================================================================ 
+
+//========================  Weeks  Event ====================================================//
+
+function getDisplayDate(_date) {
+  return _date.format("MM/DD/YYYY");
+}
+
 function setTitle() {
   if (currentView == view.day) {
     dateEl.text("Date: " +  date.format("dddd, MM/DD/YYYY"));
@@ -459,87 +432,13 @@ function setTitle() {
     dateEl.text("Week: " +  week[0].format("MM/DD/YYYY") + " to " + week[week.length - 1].format("MM/DD/YYYY"));
   }  else {
     dateEl.text(months[currentMonth]  + " " + currentYear);
-
   }
-}
-
-
-function SetupUIWeek1() {
-  week = [];
-  
-  var currentTime = date.format("MM/DD/YYYY dddd hh A");
-  var diff;
-  var calculateDate = "";
-  var currentSlot;
-  var currentTime
-  var hour = moment().format('MM/DD/YYYY dddd hh A');
-  currentTime = moment(hour, 'MM/DD/YYYY dddd hh A');
-  
-  
-  $("#tableWeek tbody tr td").each(function (index, obj) {
-    $(this).find('h6').text("");
-
-    var index_time = $(this).parent().parent().children().index(this.parentNode);
-    var index_day = $(this).parent().children().index(this);
-    
-    var currentDay = today.format("d");// getDay();
-    var slotDay = index_day - 1;
-    var text = "";
-    
-    if (currentDay == slotDay) {
-      currentSlot = moment(date.format("MM/DD/YYYY") + " " + days[index_day - 1] + " " + times[index_time], "MM/DD/YYYY dddd hh A") ;
-      text= getText(today.format("MMDDYYYY"),  times[index_time]);
-      calculateDate = today.format("MM/DD/YYYY");
-      pushDateInArray(calculateDate, today.format("d"));
-    } 
-    else if (currentDay < slotDay) {
-      diff = slotDay - currentDay;
-      const nextDay = today.clone().add(diff, 'days');
-      text = getText(nextDay.format("MMDDYYYY"),  times[index_time]);
-      calculateDate = nextDay.format("MM/DD/YYYY");
-      pushDateInArray(calculateDate, nextDay.format("d"));
-    } else {
-      
-      diff = Math.abs(slotDay - currentDay);
-      const prevDay = today.clone().subtract(diff, 'days');
-      text = getText(prevDay.format("MMDDYYYY"), times[index_time]);
-      calculateDate = prevDay.format("MM/DD/YYYY");
-      pushDateInArray(calculateDate, prevDay.format("d"));
-    }
-    var str = (calculateDate + " " + times[index_time]);
-    const dt = moment(str, 'MM/DD/YYYY hh A');
-  
-    item.date = dt.format("MM/DD/YYYY");
-    item.time = times[index_time];
-    item.description = "";
-
-    var saved = loadEvents(item);
-    $(this).find('h6').text(saved);
-
-    $(this).removeClass().addClass(getColor(dt, currentTime));
-
-    $(this).attr('data-number', calculateDate + " " + times[index_time]);
-    
-  });
-  
-  $('#table-head').find('th').each(function(index, obj){
-    if (index != 0) {
-      $(this).text(days[index - 1] + " (" + week[index - 1] + ")");
-    } 
-  });
-  console.log(week);
-  
-  dateEl.text("Week: " + week[0].format("MM/DD/YYYY") + " to " + week[week.length - 1]);
-  $(this).addClass("past");
-  $('#title-month').text("Week: " + week[0] + " to " + week[week.length - 1]);
 }
 
 //================================================================================================ 
 
 //========================  Month Event ====================================================//
-function createMonthEvent_Elements() {
-  
-}
+
 function getDay(month, year) {
   var startDt = new Date( (month + 1) + "/01/" + year);
   var defaultStart = moment(startDt.valueOf()).format("d");
@@ -548,36 +447,17 @@ function getDay(month, year) {
 function getDate(myDate) {
   return myDate.format("MM/DD/YYYY");
 }
-function getMonth(myDate) {
-  return myDate.format("M");
-}
-function getYear(myDate) {
-  return myDate.format("YYYY");
-}
-function daysInMonth(iMonth, iYear) {
+
+function totalDaysInMonth(iMonth, iYear) {
   return 32 - new Date(iYear, iMonth, 32).getDate();
 }
-function trimText(str) {
-  str = str.replaceAll(":","");
-  str = str.replace(" ","");
-  str = str.replace("/","");
-  str = str.replace("/","");
-  
-  return str;
-}
-function showCalendar(month, year) {
-  
+
+function showMonth(month, year) {
+  tableMonthEl.html('');
+  let date = 1;
   var firstDay=  getDay(month, year);
   var descText = "";
   
-  tbl = $('#calendar-body'); // body of the calendar
-  tbl.html('');
-  
-  
-  selectYear.value = year;
-  selectMonth.value = month;
-  
-  let date = 1;
   for (let i = 0; i < 6; i++) {
     let row = $("<tr></tr>");
     row.attr("data-toggle", "modal");
@@ -589,15 +469,15 @@ function showCalendar(month, year) {
         cellText = $("<p></p>");
         descText = $("<h6></h6>");
         descText.addClass("calendar-event");
-        
+
         cell.append(cellText);
         cell.append(descText);
+
         row.append(cell);
       }
-      else if (date > daysInMonth(month, year)) {
+      else if (date > totalDaysInMonth(month, year)) {
         break;
       }
-      
       else {
         cell = $("<td></td>");
         cellText = $("<p></p>");
@@ -606,56 +486,62 @@ function showCalendar(month, year) {
         descText = $("<h6></h6>");
         descText.addClass("calendar-event");
       
+        var timeText = $('<h5></h5>');
+        timeText.text("");
+        timeText.addClass("calendar-time-text");
+
+
         var str = moment(date + months[month] + year);
-        const myMomentObject = moment(str, 'YYYY-MM-DD')
-        
-        if (date == moment().format("D") && month  == (moment().format("M") - 1) && year == moment().format("YYYY")) {
-          cell.addClass("present");
+        const myMomentObject = moment(str, 'YYYY-MM-DD');
+
+        if (myMomentObject.format("MM/DD/YYYY") == today.format("MM/DD/YYYY")) {
+              cell.addClass("present");
         } else if (myMomentObject.isBefore(today)) {
-          cell.addClass("past");
+              cell.addClass("past");
         } else {
-          cell.addClass("future");
+              cell.addClass("future");
         }
-        // color today's date
-        
         cell.append(cellText);
+        cell.append(timeText);
         cell.append(descText);
         cell.attr('data-number', myMomentObject.format("MM/DD/YYYY") + " " + "00:00 AM");
 
         item.date = myMomentObject.format("MM/DD/YYYY") ;
         item.time = "";
+        let saved = loadEvents(item);
+      
+        if (saved != null) {
+          timeText.text(saved.time);
+          descText.text(saved.description);
+        }
+        
 
-        descText.text(loadEvents(item));
         row.append(cell);
         date++;
-        
       }
     }
-
-    tbl.append(row); // appending each row into calendar body.
+    setTitle();
+    tableMonthEl.append(row); // appending each row into calendar body.
   }
-  
- // showEventsCalendar();
 }
+
 function nextWeek() {
-      
-  date = today.add(7, "days");
-  SetupUIWeek();
+    date = today.add(7, "days");
+    SetupUIWeek();
 }
 function prevWeek(){
-  
-  date = today.subtract(7, "days");
+   date = today.subtract(7, "days");
   SetupUIWeek();
 }
 function nextMonth() {
   currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
   currentMonth = (currentMonth + 1) % 12;
-  showCalendar(currentMonth, currentYear);
+  showMonth(currentMonth, currentYear);
 }
 function prevMonth() {
   currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
   currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
-  showCalendar(currentMonth, currentYear);
+  showMonth(currentMonth, currentYear);
 }
 function nextDay(){
   date = date.add(1, "days");
@@ -680,10 +566,8 @@ function getEvent() {
   return  localStorage.getItem("Event");
 }
 /*--------------------------------------------------------------
-# Method to save Score 
+# Method to save event 
 --------------------------------------------------------------*/
-function removeItemIfAlreadyExists() {
-}
 function saveEvent(_item) {
   var object = createEventbject(_item);
   var savedData = getEvent();
@@ -695,7 +579,6 @@ function saveEvent(_item) {
     Events = JSON.parse(savedData);
     
     for (var i=0; i<Events.length; i++) {
-      console.log(Events[i].date, Events[i].time, _item.time, _item.date);
       if (Events[i].date == _item.date && Events[i].time == _item.time) {
         console.log("found match: "+ Events[i].description);
         Events.splice(i, 1);

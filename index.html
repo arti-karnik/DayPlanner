@@ -41,7 +41,7 @@
         <button type="button" class="button" id="nextDayBtn"><i class="fas fa-arrow-right fa-lg"></i></button>
         <div class="col"><h2 id="title-date" class="text-center"> Date :  </h2>  </div>
         <select id="selectTime"> 
-          <option value= 1> Standard hours(9 to 5) </option>
+          <option value= 1> Standard hours(9AM to 7PM) </option>
           <option value= 2> 24 hours </option>
         </select>
         <select id="selectDay"> 
@@ -52,31 +52,12 @@
       </div>
     </div>
   </main>
-  <div class="container" id="singledayView"></div>
-  
-  <div class="container" id="weekView"> 
-    <table class="table-week table-bordered" id="tableWeek">
-      <thead>
-        <tr id="table-head">
-          <th scope="col"></th>
-          <th id="thead" scope="col">Sunday</th>
-          <th id="thead" scope="col">Monday</th>
-          <th id="thead" scope="col">Tuesday</th>
-          <th id="th" scope="col">Wednesday</th>
-          <th id="th" scope="col">Thursday</th>
-          <th id="th" scope="col">Friday</th>
-          <th id="th" scope="col">Saturday</th>
-        </tr>
-      </thead>
-      <tbody id="week-contents"></tbody>
-    </table>
-  </div>
-  
-  <section>
-    <div class="container" id="monthView"> 
-      <table class="table-month table-bordered" id="calendar">
-        <thead>
-          <tr id="table-head">
+    <div class="container" id="singledayView"></div>
+    <div class="container" id="weekView"> 
+      <table class="table" id="tableWeek">
+        <thead id="table-head" class="thead-dark">
+          <tr id="table-row">
+            <th scope="col"></th>
             <th id="thead" scope="col">Sunday</th>
             <th id="thead" scope="col">Monday</th>
             <th id="thead" scope="col">Tuesday</th>
@@ -86,13 +67,25 @@
             <th id="th" scope="col">Saturday</th>
           </tr>
         </thead>
-        <tbody id="calendar-body"></tbody>
+        <tbody id="week-contents"></tbody>
       </table>
     </div>
-  </section>
-  
-  
-  
+    <div class="container" id="monthView"> 
+      <table class="table" id="calendar">
+        <thead class="thead-dark">
+          <tr>
+            <th id="thead" scope="col">Sunday</th>
+            <th id="thead" scope="col">Monday</th>
+            <th id="thead" scope="col">Tuesday</th>
+            <th id="th" scope="col">Wednesday</th>
+            <th id="th" scope="col">Thursday</th>
+            <th id="th" scope="col">Friday</th>
+            <th id="th" scope="col">Saturday</th>
+          </tr>
+        </thead>
+        <tbody id="month-contents"></tbody>
+      </table>
+    </div>
   
   
   
@@ -121,7 +114,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" class="close" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="save()">Save Event </button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" id="modalsavebtn" onclick="save()">Save Event </button>
         </div>
       </div>
     </div>

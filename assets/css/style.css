@@ -16,20 +16,12 @@ header h2 {
   padding-top: 30px;
   font-style: italic;
 }
-.wrapper {
-  border-width: 10px;
-  box-shadow: rgba(0, 128, 128, 0.15) 2px 5px 5px 5px;
-  margin-top: 30px;
-  width: 100%;
-  background-color: #f8f9fa;
-  margin: 20px 40px 0 40px;
-}
 .container {
-  margin-bottom: 20px;
+  margin-bottom: 10%;
   padding-bottom: 20px;
   border-width: 10px;
   box-shadow: rgba(0, 128, 128, 0.15) 2px 5px 5px 5px;
-  width: 100%;
+  width: 80%;
   background-color: #f8f9fa;
 }
 .main {
@@ -39,7 +31,7 @@ header h2 {
     margin-bottom: 20px;
 }
 .row {
-      margin: 5px;
+    margin: 5px;
 }
 
 .hour {
@@ -67,7 +59,6 @@ h2 {
     font-size: 22px;
     color: rgb(26, 15, 15);
     width: 82%;
-
 }
 .description{
   white-space: pre-wrap;
@@ -81,7 +72,6 @@ h2 {
   margin-top: 10px;
   text-align: center;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-
 }
 .form-inline {
   margin: 0px;
@@ -99,12 +89,12 @@ textarea  {
   margin-bottom: 0px;
   height: 48px;
 }
- .table-text {
-  background-color: cadetblue;
+#description-text {
   width: 100%;
-  margin-left: -5px;
-
+  margin:0px;
+  padding: 0px;
 }
+ 
 .past {
   color: black;
   opacity: 0.5;
@@ -122,10 +112,7 @@ textarea  {
   color: rgb(20, 18, 18);
   opacity: 1.0;
 }
-.calendar-event {
-  background-color: brown;
-  color: rgb(20, 18, 18);
-}
+
 .button {
   margin-top: 5px;
   margin-left: 10px;
@@ -155,19 +142,6 @@ textarea  {
   font-size: 20px;
   transition: all .3s ease-in-out;
 }
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-
-}
-th, td {
-  padding: 5px;
-  text-align: left; 
-  vertical-align: top;
-
-}
-
-
 .button-options  {
   margin-left: 5px;
   margin: 1px;
@@ -210,21 +184,35 @@ select {
   width: 100%;
   background-color: #252729;
  }
+ table h6 {
+   background-color: #de5449;
+   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+   color: black;
+ }
+ .event
 
- .table-month {
-  table-layout: fixed;
-  text-align: center;
-  align-self: center;
-}
-
-
-td {
-  border: 1px solid black;
+ #tableWeek h6 {
+  max-height: 50px;
   overflow: hidden;
-  width:130px;
-  height: 30px;
+ }
+ #tableWeek , th, td  {
+  border: 1px solid #000000;
+  overflow: hidden;
+  table-layout: fixed;
 }
+#calendar h6 {
+  overflow: hidden;
+ }
+ #calendar , th, td  {
+  border: 1px solid #000000;
+  overflow: hidden;
+  table-layout: fixed;
+  max-height: 50px;
 
- 
+ }
+ .calendar-time-text {
+   background-color: lightskyblue;
+   text-align: left;
+   font-size: 15px;
+ }
 
-  
