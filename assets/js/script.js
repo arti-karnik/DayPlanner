@@ -36,14 +36,16 @@ $(document).ready(function() {
   start();
 
   ///=====   Button click events  ===== ////
+  
+  ///=====   Save button events  ===== ////
   $( ".button-save" ).click(function() {
     item.date = date.format("MM/DD/YYYY");
     item.time = $(this).parent().find("p").text();
     item.desciption = $(this).parent().find("textarea").val();
-
     saveEvent(item);
   })
   
+  ///=====  Prev button events  ===== ////
   $( "#prevDayBtn" ).click(function() {
     if (currentView == view.day) {
       prevDay();
@@ -52,8 +54,9 @@ $(document).ready(function() {
     } else {
       prevMonth();
     }
-    
   });
+  
+  ///=====  Next button events  ===== ////
   $( "#nextDayBtn" ).click(function() {
     if (currentView == view.day) {
       nextDay();
@@ -64,10 +67,12 @@ $(document).ready(function() {
     }
   });
   
+  ///=====  Select time events  ===== ////
   $("#selectTime").change(function(){
     ($(this).val() == 1) ?  $('.divallDay').hide() : $('.divallDay').show();
   });
   
+  ///=====  month view click events  ===== ////
   $('#calendar').on('click', 'tbody td', function (e) {
     
     if ($(this).hasClass( "past" )) {
@@ -88,6 +93,7 @@ $(document).ready(function() {
 
   });
   
+    ///=====  Week view click event  ===== ////
   $('#weekView').on('click', 'tbody td', function (e) {
     if ($(this).hasClass( "past" )) {
       alert("This event is already passed, wont be able to add/edit.");
@@ -95,7 +101,6 @@ $(document).ready(function() {
     } else {
       $('#modalsavebtn').attr("disabled", false);
     }
-
     var str = $(this).attr('data-number');
     const myMomentObject = moment(str, 'MM/DD/YYYY hh:mm A');
 
@@ -107,11 +112,13 @@ $(document).ready(function() {
     loadModaldetails(item);
   });
   
+    ///=====  day view click events  ===== ////
   $("#dayView").on("click", 'textarea', function(e) {
       var slot = $(this).parent().find('p').text();
       loadModaldetails(date, slot, $(this).text());
   });
   
+      ///=====  select view type: Day / Month / Year  ===== ////
   $("#selectDay").change(function(){
     if ($(this).val() == 1) {
       currentView = view.day;
@@ -127,31 +134,21 @@ $(document).ready(function() {
   ///========================================
 });
 //===========================================================================//
-function savetimesSlotinCalendar(array, obj) {
-  for (var i=0 ; i<array.length; i++) {
-        var descText = $("<h6></h6>");
-        descText.addClass("calendar-event");
-        descText.text(array[i].description);
 
-        var timeText = $('<h5></h5>');
-        timeText.text("");
-        timeText.addClass("calendar-time-text");
-        timeText.text(array[i].time);
-        obj.append(timeText);
-        obj.append(descText);
-  }
-}
+// Create UI Elements
 function createUIElements() {
   createWeekEvent_Elements();
   addtimeSlots();
   createSingleDayEventElements();
   setupUISingleDayEvent();
 }
+// Start-up code
 function start(){
   currentView = view.day;
   showView(view.day);
   weekView.hide();
 }
+// Show view
 function showView(_view) {
   if (_view == view.day) {
     weekView.hide();
@@ -170,23 +167,26 @@ function showView(_view) {
     singleView.hide();
   }
 }
+// Next month clicked
 function next() {
   currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
   currentMonth = (currentMonth + 1) % 12;
   showMonth(currentMonth, currentYear);
 }
-
+// Previous month clicked
 function previous() {
   currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
   currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
   showMonth(currentMonth, currentYear);
 }
+// Save button clicked
 function save(date) {
     item.date = selectedDate;
     item.time = $('#descmodal').find('#timeSlot').val();
     item.desciption = $("#description-text").val();
     saveEvent(item);
 }
+// Add time slots in modal view
 function addtimeSlots() {
   for (var i=0; i<times.length; i++) {
     var optionEl = $('<option></option>');

@@ -12,8 +12,7 @@
   rel="stylesheet"
   href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
   />
-  <link
-  rel="stylesheet"
+  <link rel="stylesheet"
   href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
   integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
   crossorigin="anonymous"
@@ -23,7 +22,7 @@
   rel="stylesheet"
   />
   <link rel="stylesheet" href="./assets/css/style.css" />
-  <title>Work Day Scheduler</title>
+  <title>Plan My Day</title>
 </head>
 
 <body>
@@ -34,32 +33,41 @@
     </nav>
   </header>
   <!-- ======= Header ends here ======= -->
-    <main class="main text-center">
-      <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-        <div class="btn-group" role="group" aria-label="First group">
-          <button type="button" class="button" id="prevDayBtn"><i class="fas fa-arrow-left fa-lg"></i></button>
-          <button type="button" class="button" id="nextDayBtn"><i class="fas fa-arrow-right fa-lg"></i></button>
-         </div>
-         <div id="title-date" class="title"> <h2> Date:   </h2> </div>
-        <div class="input-group">
-          
-          <select id="selectTime"> 
-            <option value= 1> Business hours(9AM to 7PM) </option>
-            <option value= 2> 24 hours </option>
-          </select>     
-          <select id="selectDay"> 
-            <option value = 1> Day </option>
-            <option value= 2> Week </option>
-            <option value= 3> Month </option>
-          </select>           
-        </div>
+  
+  <!-- ======= Main content - Title starts ======= -->
+  <main class="main text-center">
+    <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+      <div class="btn-group" role="group" aria-label="First group">
+        <button type="button" class="button" id="prevDayBtn"><i class="fas fa-arrow-left fa-lg"></i></button>
+        <button type="button" class="button" id="nextDayBtn"><i class="fas fa-arrow-right fa-lg"></i></button>
       </div>
-
-     
-    </main>
-
-    <div class="container" id="singledayView"></div>
+      <div id="title-date" class="title"> <h2> Date:   </h2> </div>
+      <div class="input-group">
+        
+        <select id="selectTime"> 
+          <option value= 1> Business hours(9AM to 7PM) </option>
+          <option value= 2> 24 hours </option>
+        </select>     
+        <select id="selectDay"> 
+          <option value = 1> Day </option>
+          <option value= 2> Week </option>
+          <option value= 3> Month </option>
+        </select>           
+      </div>
+    </div>
     
+    
+  </main>
+  <!-- ======= main/title content ends here ======= -->
+  
+  <!-- ======= Day view content  ================== -->
+  <section> 
+    <div class="container" id="singledayView"></div>
+  </section>
+  <!-- ======= Day view content ends   ============ -->
+  
+  <!-- ======= Week view content  ================= -->
+  <section>
     <div class="wrapper" id="weekView"> 
       <table class="table" id="tableWeek">
         <thead id="table-head" class="thead-dark">
@@ -77,6 +85,11 @@
         <tbody id="week-contents"></tbody>
       </table>
     </div>
+  </section>
+  <!-- ======= Week view content ends  ============= -->
+  
+  <!-- ======= Month view  ========================== -->
+  <section>
     <div class="wrapper" id="monthView"> 
       <table class="table" id="calendar">
         <thead class="thead-dark">
@@ -93,48 +106,49 @@
         <tbody id="month-contents"></tbody>
       </table>
     </div>
+  </section>
+  <!-- ======= Month view ends  ====================== -->
   
-    <div class="modal fade" id="descmodal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" id="DescModal">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Event</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button> 
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label for="recipient-name" class="col-form-label text-center" id="modal-date-text">Date: </label>
-              </div>
-              <label for="time-slot">Choose a time:</label>
-              <select name="time-slot" id="timeSlot">
-              </select>
-              <div class="form-group">
-                <label for="message-text" class="col-form-label">Description:</label>
-                <textarea class="form-control" id="description-text"></textarea>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" class="close" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" id="modalsavebtn" onclick="save()">Save Event </button>
-          </div>
+  <!-- ======= Modal view ============================ -->
+  <div class="modal fade" id="descmodal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" id="DescModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Event</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> 
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label text-center" id="modal-date-text">Date: </label>
+            </div>
+            <label for="time-slot">Choose a time:</label>
+            <select name="time-slot" id="timeSlot">
+            </select>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">Description:</label>
+              <textarea class="form-control" id="description-text"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" class="close" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" id="modalsavebtn" onclick="save()">Save Event </button>
         </div>
       </div>
     </div>
+  </div>
+  <!-- ======= Modal view ends  ===================== -->
   
-  <!-- Timeblocks go here -->
   <!-- jQuery library -->
-  
   <!-- Latest compiled JavaScript -->
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-  
   <script src="./assets/js/script.js"> </script>    
   
   <!-- ======= Footer starts =======     -->
@@ -143,4 +157,7 @@
   </footer>
   <!-- ======= Footer ends ======= -->
 </body>
+<!-- ======= Footer ends ======= -->
 </html>
+<!-- ======= Footer ends ======= -->
+
